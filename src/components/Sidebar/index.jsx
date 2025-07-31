@@ -53,9 +53,7 @@ const Sidebar = () => {
     } else {
       document.body.style.overflow = "auto";
     }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
+    return () => {};
   }, [isOpen, windowWidth]);
 
   useEffect(() => {
@@ -93,11 +91,7 @@ const Sidebar = () => {
 
       {/* بک‌دراپ موبایل با شفافیت کمتر */}
       {isOpen && windowWidth < 768 && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-10 z-40"
-          onClick={() => setIsOpen(false)}
-          aria-hidden="true"
-        />
+        <div onClick={() => setIsOpen(false)} aria-hidden="true" />
       )}
 
       <aside

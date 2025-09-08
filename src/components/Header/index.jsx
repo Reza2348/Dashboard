@@ -397,7 +397,7 @@ export default function Header() {
               <div className="relative">
                 <FiSearch
                   className={`absolute top-3.5 ${
-                    isRTL ? "right-4" : "left-4"
+                    isRTL ? "right-3 sm:right-4" : "left-3 sm:left-4"
                   } text-gray-400 w-6 h-6`}
                   aria-hidden="true"
                 />
@@ -406,16 +406,17 @@ export default function Header() {
                   type="search"
                   placeholder={t("searchPlaceholder")}
                   aria-label={t("searchPlaceholder")}
-                  className={`w-full px-5 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow ${
-                    isRTL ? "pr-12 pl-5" : "pl-12 pr-5"
+                  className={`w-full px-3 py-2 sm:px-5 sm:py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    isRTL
+                      ? "pr-10 pl-3 sm:pr-12 sm:pl-5"
+                      : "pl-10 pr-3 sm:pl-12 sm:pr-5"
                   }`}
-                  autoFocus
                 />
                 <button
-                  aria-label={t("closeSearch")}
+                  aria-label="closeSearch"
                   onClick={() => setIsSearchModalOpen(false)}
-                  className="absolute top-3.5 right-4 text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full p-1"
                   type="button"
+                  className="absolute top-3.5 left-3 sm:left-4 text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full p-1"
                 >
                   <FiX className="w-6 h-6" />
                 </button>

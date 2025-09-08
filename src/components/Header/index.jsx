@@ -29,7 +29,8 @@ export default function Header() {
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [ariaLiveMessage, setAriaLiveMessage] = useState("");
-  const [notificationCount, setNotificationCount] = useState(3); // مثال تعداد اعلان
+  const [notificationCount, setNotificationCount] = useState(3);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const dropdownRef = useRef(null);
   const searchInputRef = useRef(null);
@@ -207,7 +208,6 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Search Button for mobile */}
           <button
             ref={searchButtonRef}
             className="md:hidden text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full p-2"
@@ -217,7 +217,7 @@ export default function Header() {
             <FiSearch className="w-7 h-7" />
           </button>
 
-          <div className="flex items-center gap-5 sm:gap-6">
+          <div className="flex items-center gap-3 sm:gap-6">
             {/* Language Dropdown */}
             <div
               className="relative"
@@ -227,105 +227,105 @@ export default function Header() {
               <button
                 ref={langButtonRef}
                 onClick={() => setIsLangOpen((prev) => !prev)}
-                className="flex items-center gap-2 sm:gap-3 text-sm sm:text-base text-gray-700 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md px-2 py-1 select-none"
+                className="flex items-center gap-1 sm:gap-2 text-sm sm:text-base text-gray-700 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md px-2 py-1 select-none"
                 aria-haspopup="listbox"
                 aria-expanded={isLangOpen}
                 aria-controls="language-listbox"
                 aria-label={t("changeLanguage")}
               >
-                {isRTL && (
-                  <FiChevronDown className="w-4 h-4 text-gray-500 rotate-180" />
-                )}
+                {/* پرچم همیشه نمایش داده می‌شود */}
                 <img
                   src={languages[currentLang]?.flag || languages.en.flag}
                   alt={languages[currentLang]?.label || "English"}
-                  className="w-5 h-5 rounded-full border border-gray-300"
+                  className="w-5 h-5 rounded-full border border-gray-300 flex-shrink-0"
                 />
+                {/* متن و فلش فقط در sm+ */}
                 <span className="hidden sm:inline truncate max-w-[90px]">
                   {languages[currentLang]?.label || "Eng (US)"}
                 </span>
-                {!isRTL && <FiChevronDown className="w-4 h-4 text-gray-500" />}
+                <FiChevronDown className="w-4 h-4 text-gray-500 hidden sm:inline" />
               </button>
 
-              <AnimatePresence>
-                {isLangOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: -12 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: -12 }}
-                    transition={{ duration: 0.15 }}
-                    className={`absolute mt-2 w-60 bg-white border border-gray-200 rounded-lg shadow-lg z-50 ${
-                      isRTL ? "left-0" : "right-0"
-                    }`}
-                    role="listbox"
-                    id="language-listbox"
-                    tabIndex={-1}
-                  >
-                    <div className="p-2">
-                      <input
-                        type="search"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder={t("searchPlaceholder")}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        autoFocus
-                        aria-label={t("filterLanguages")}
-                      />
-                    </div>
-                    <ul className="max-h-64 overflow-auto" tabIndex={-1}>
-                      {filteredLanguages.length > 0 ? (
-                        filteredLanguages.map(([key, lang], index) => (
-                          <li
-                            key={key}
-                            ref={(el) => (optionsRef.current[index] = el)}
-                            className={`cursor-pointer ${
-                              focusedIndex === index
-                                ? "bg-blue-100"
-                                : "hover:bg-blue-50"
+              {/* Dropdown */}
+              {isLangOpen && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: -8 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: -8 }}
+                  transition={{ duration: 0.15 }}
+                  className={`absolute mt-2 w-screen max-w-xs sm:w-60 bg-white border border-gray-200 rounded-lg shadow-lg z-50 ${
+                    isRTL ? "left-0" : "right-0"
+                  }`}
+                  role="listbox"
+                  id="language-listbox"
+                  tabIndex={-1}
+                >
+                  <div className="p-2">
+                    <input
+                      type="search"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      placeholder={t("searchPlaceholder")}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      autoFocus
+                      aria-label={t("filterLanguages")}
+                    />
+                  </div>
+                  <ul className="max-h-64 overflow-auto" tabIndex={-1}>
+                    {filteredLanguages.length > 0 ? (
+                      filteredLanguages.map(([key, lang], index) => (
+                        <li
+                          key={key}
+                          ref={(el) => (optionsRef.current[index] = el)}
+                          className={`cursor-pointer ${
+                            focusedIndex === index
+                              ? "bg-blue-100"
+                              : "hover:bg-blue-50"
+                          }`}
+                          role="option"
+                          aria-selected={key === currentLang}
+                        >
+                          <button
+                            onClick={() => changeLanguage(key)}
+                            className={`flex items-center gap-2 sm:gap-3 w-full px-4 py-2 text-sm text-gray-800 transition-colors duration-200 rounded-md focus:outline-none ${
+                              key === currentLang && focusedIndex !== index
+                                ? "bg-blue-50 font-semibold"
+                                : ""
                             }`}
-                            role="option"
-                            aria-selected={key === currentLang}
+                            type="button"
+                            tabIndex={-1}
                           >
-                            <button
-                              onClick={() => changeLanguage(key)}
-                              className={`flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-800 transition-colors duration-200 rounded-md focus:outline-none ${
-                                key === currentLang && focusedIndex !== index
-                                  ? "bg-blue-50 font-semibold"
-                                  : ""
-                              }`}
-                              type="button"
-                              tabIndex={-1}
-                            >
-                              <img
-                                src={lang.flag}
-                                alt={lang.label}
-                                className="w-5 h-5 rounded-full border border-gray-300"
-                              />
-                              <span className="truncate">{lang.label}</span>
-                            </button>
-                          </li>
-                        ))
-                      ) : (
-                        <li className="px-3 py-2 text-sm text-gray-500 select-none">
-                          {t("noLanguagesFound")}
+                            <img
+                              src={lang.flag}
+                              alt={lang.label}
+                              className="w-5 h-5 sm:w-5 sm:h-5 rounded-full border border-gray-300 flex-shrink-0"
+                            />
+                            <span className="truncate max-w-[120px] sm:max-w-[160px]">
+                              {lang.label}
+                            </span>
+                          </button>
                         </li>
-                      )}
-                    </ul>
-                    <div
-                      aria-live="polite"
-                      aria-atomic="true"
-                      className="sr-only"
-                      role="status"
-                    >
-                      {ariaLiveMessage}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                      ))
+                    ) : (
+                      <li className="px-3 py-2 text-sm text-gray-500 select-none">
+                        {t("noLanguagesFound")}
+                      </li>
+                    )}
+                  </ul>
+                  <div
+                    aria-live="polite"
+                    aria-atomic="true"
+                    className="sr-only"
+                    role="status"
+                  >
+                    {ariaLiveMessage}
+                  </div>
+                </motion.div>
+              )}
             </div>
 
             {/* Notification */}
-            <div className="relative">
+            <div className="relative flex-shrink-0">
               <AiOutlineBell
                 className="w-6 h-6 text-gray-600"
                 aria-label={t("notifications")}
@@ -343,9 +343,10 @@ export default function Header() {
 
             {/* User Profile */}
             <div
-              className={`flex items-center gap-2 sm:gap-3 cursor-pointer select-none ${
+              className={`flex items-center gap-1 sm:gap-2 cursor-pointer select-none ${
                 isRTL ? "flex-row-reverse text-right" : "text-left"
               }`}
+              onClick={() => setIsProfileOpen((prev) => !prev)}
               tabIndex={0}
               role="button"
               aria-label={t("userMenu")}
@@ -353,19 +354,15 @@ export default function Header() {
               <img
                 src={Img}
                 alt={t("profilePictureAlt") || "Profile"}
-                className="w-8 h-8 rounded-full border border-gray-300"
+                className="w-8 h-8 rounded-full border border-gray-300 flex-shrink-0"
               />
-              <div className="hidden sm:flex flex-col text-sm min-w-[90px] overflow-hidden">
+              <div className="hidden sm:flex flex-col text-sm overflow-hidden">
                 <span className="font-semibold text-gray-900 truncate">
                   {t("userName")}
                 </span>
                 <span className="text-gray-500 truncate">{t("admin")}</span>
               </div>
-              <FiChevronDown
-                className={`w-4 h-4 text-gray-500 hidden sm:block ${
-                  isRTL ? "rotate-180" : ""
-                }`}
-              />
+              <FiChevronDown className="w-4 h-4 text-gray-500 hidden sm:inline" />
             </div>
           </div>
         </motion.header>
@@ -378,7 +375,7 @@ export default function Header() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/30 backdrop-blur-md"
             dir={isRTL ? "rtl" : "ltr"}
             aria-modal="true"
             role="dialog"
@@ -389,7 +386,7 @@ export default function Header() {
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
               transition={{ duration: 0.2 }}
-              className="bg-white rounded-lg w-full max-w-md p-6 shadow-lg relative"
+              className="bg-white rounded-lg w-full max-w-md sm:max-w-lg md:max-w-xl p-4 sm:p-5 md:p-6 shadow-lg relative"
             >
               <h2
                 id="search-modal-title"
